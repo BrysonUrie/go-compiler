@@ -32,6 +32,7 @@ const (
 
 	// Literals.
 	IDENTIFIER
+	TYPE
 	STRING
 	NUMBER
 
@@ -73,6 +74,7 @@ var keywordMap = map[string]TokenType{
 	"true":   TRUE,
 	"var":    VAR,
 	"while":  WHILE,
+	"int32":  TYPE,
 }
 
 type Token struct {

@@ -69,13 +69,18 @@ func (table *ll1Table) String() string {
 }
 
 func createTable(prodSet ProductionSet) (*ll1Table, error) {
-	return &ll1Table{
+	table := &ll1Table{
 		first:     make(first),
 		follow:    make(follow),
 		firstPlus: make(firstPlus),
 		table:     make(map[Expr]map[Expr]*Production),
 		prodSet:   prodSet,
-	}, nil
+	}
+	table.populateFirst()
+	table.populateFollow()
+	table.populateFirstPlus()
+	table.populateTable()
+	return table, nil
 }
 
 func (table ll1Table) getNonTerm(exprKey Expr) (Expr, error) {
@@ -153,7 +158,6 @@ func (table ll1Table) populateFirst() error {
 
 	stillChanging := true
 	for stillChanging {
-
 		stillChanging = false
 		for _, prod := range *table.prodSet.productions {
 			for _, curExprSet := range *prod.rhs {
@@ -348,5 +352,5 @@ func (table ll1Table) getTableValue(focus Expr, word scanner.Token) (*Production
 			}
 		}
 	}
-	return nil, errors.New("No value found in table for [" + focus.Literal() + "][" + word.Lexeme + "]")
+	return nil, errors.New("No value found in table for [" + focus.Literal() + "][" + word.Lexeme + " : " + tokenExprType.Literal() + "]")
 }

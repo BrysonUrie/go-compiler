@@ -87,6 +87,8 @@ func (s *Scanner) ScanToken() {
 	case '<':
 		if s.Match('=') {
 			s.AddToken(LESS_EQUAL, "<=")
+		} else if s.Match('<') {
+			s.AddToken(PRINT, "<<")
 		} else {
 			s.AddToken(LESS, "<")
 		}
@@ -120,7 +122,7 @@ func (s *Scanner) Digit() {
 	s.AddToken(NUMBER, number)
 }
 func (s *Scanner) Identifier() {
-	for unicode.IsDigit(s.Peek()) || unicode.IsLetter(s.Peek()) {
+	for unicode.IsDigit(s.Peek()) || unicode.IsLetter(s.Peek()) || s.Peek() == '_' {
 		s.Advance()
 	}
 

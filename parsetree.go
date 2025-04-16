@@ -9,6 +9,7 @@ import (
 
 type ParseTreeNode struct {
 	Symbol   Expr
+	Parent   *ParseTreeNode
 	Children []*ParseTreeNode
 	IsRont   bool
 }
@@ -73,8 +74,8 @@ func CreateParseTree(table ll1Table, tokens []scanner.Token) (*ParseTreeNode, er
 					token:   &word,
 				}
 				if termNode, ok := focusNode.Symbol.(*Term); ok { // Ensure it's a pointer
-					token := scanner.CreateToken(word.Type, word.Lexeme) // Create token
-					termNode.token = token                               // Store token as a pointer
+					token := scanner.CreateToken((&word).Type, (&word).Lexeme) // Create token
+					termNode.token = token                                     // Store token as a pointer
 				}
 
 				curWordIndex++
@@ -101,7 +102,7 @@ func CreateParseTree(table ll1Table, tokens []scanner.Token) (*ParseTreeNode, er
 							isRont = true
 						}
 					}
-					childNode := &ParseTreeNode{Symbol: curExpr, IsRont: isRont}
+					childNode := &ParseTreeNode{Symbol: curExpr.Copy(), IsRont: isRont, Parent: focusNode}
 					newChildren = append(newChildren, childNode)
 					stack.Push(childNode)
 				}
@@ -123,7 +124,7 @@ func (node *ParseTreeNode) findRontChild() int {
 
 func (node *ParseTreeNode) findOpIndex() int {
 	for i, child := range node.Children {
-		if IsOperator(child.Symbol) {
+		if IsOperator(child.Symbol) && node.Parent.Symbol.Literal() != "GTermSign" {
 			return i
 		}
 	}

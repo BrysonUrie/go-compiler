@@ -38,3 +38,16 @@ func (s *Stack[T]) Peek() (T, error) {
 func (s *Stack[T]) IsEmpty() bool {
 	return len(s.items) == 0
 }
+
+func (s *Stack[T]) Copy() *Stack[T] {
+	newItems := make([]T, len(s.items))
+	copy(newItems, s.items)
+
+	return &Stack[T]{items: newItems}
+}
+
+func (s *Stack[T]) Reverse() {
+	for i, j := 0, len(s.items)-1; i < j; i, j = i+1, j-1 {
+		s.items[i], s.items[j] = s.items[j], s.items[i]
+	}
+}

@@ -1,19 +1,22 @@
 Goal → LineFull
-LineFull → Expr
-Expr → LTermAddSub Expr0
-Expr0 → + RTermAddSub Expr0 | - RTermAddSub Expr0 | #
-LTermAddSub → LTermMultDiv LTermAddSub0
-LTermAddSub0 → + LTermMultDiv LTermAddSub0 | - LTermMultDiv LTermAddSub0 | #
-LTermMultDiv → LTermPower LTermMultDiv0
-LTermMultDiv0 → * RTermMultDiv LTermMultDiv0 | / RTermMultDiv LTermMultDiv0 | #
-LTermPower → GTermSign LTermPower0
-LTermPower0 → ^ RTermPower LTermPower0 | #
-RTermAddSub → RTermMultDiv RTermAddSub0
-RTermAddSub0 → + RTermMultDiv RTermAddSub0 | - RTermMultDiv RTermAddSub0 | #
-RTermMultDiv → RTermPower RTermMultDiv0
-RTermMultDiv0 → * RTermPower RTermMultDiv0 | / RTermPower RTermMultDiv0 | #
-RTermPower → GTermSign RTermPower0
-RTermPower0 → ^ GTermSign RTermPower0 | #
+LineFull → VarType VarTypeAfter | LineVarName | ExprWithoutName
+VarType → int32
+VarTypeAfter → LineVarName
+LineVarName → name LineVarNameRemaining
+LineVarNameRemaining → = Expr
+ExprWithoutName → << GTermSign | Expr
+Expr → LTermAddSub AddSub0
+LTermAddSub → LTermMultDiv MultDiv0
+LTermMultDiv → LTermPower Power0
+RTermAddSub → RTermMultDiv MultDiv0
+RTermMultDiv → RTermPower Power0
+AddSub0 → + RTermAddSub AddSub0 | - RTermAddSub AddSub0 | #
+MultDiv0 → MultDivAndRightOp | #
+MultDivAndRightOp → * RTermMultDiv MultDiv0 | / RTermMultDiv MultDiv0
+Power0 → PowerAndRightOp | #
+PowerAndRightOp → ^ RTermPower Power0
+LTermPower → GTermSign
+RTermPower → GTermSign
 GTermSign → - GTerm | GTerm
-GTerm → Parens | num | name
+GTerm → Parens | name | num 
 Parens → ( Expr )

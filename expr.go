@@ -4,6 +4,7 @@ import scanner "github.com/brysonurie/ll1-parser/tokenizer"
 
 type Expr interface {
 	Literal() string
+	Copy() Expr
 }
 
 type NonTerm struct {
@@ -12,6 +13,9 @@ type NonTerm struct {
 
 func (nonTerm *NonTerm) Literal() string {
 	return nonTerm.literal
+}
+func (nonTerm *NonTerm) Copy() Expr {
+	return &NonTerm{literal: nonTerm.literal}
 }
 
 type Term struct {
@@ -22,6 +26,12 @@ type Term struct {
 func (term *Term) Literal() string {
 	return term.literal
 }
+func (term *Term) Copy() Expr {
+	return &Term{
+		literal: term.literal,
+		token:   term.token,
+	}
+}
 
 type Epsilon struct{}
 
@@ -30,11 +40,17 @@ var EpsilonString = "#"
 func (term *Epsilon) Literal() string {
 	return EpsilonString
 }
+func (term *Epsilon) Copy() Expr {
+	return &Epsilon{}
+}
 
 type EOF struct{}
 
 func (term *EOF) Literal() string {
 	return "$"
+}
+func (term *EOF) Copy() Expr {
+	return &EOF{}
 }
 
 var Terminals = []string{
@@ -47,6 +63,9 @@ var Terminals = []string{
 	"(",    // Opening parenthesis
 	")",    // Closing parenthesis
 	"^",    // Exponentiation operator
+	"=",
+	"<<",
+	"int32",
 }
 
 var Operators = []string{
@@ -55,6 +74,7 @@ var Operators = []string{
 	"-", // Minus sign or subtraction operator
 	"+", // Plus sign or addition operator
 	"^", // Exponentiation operator
+	"=", // Equal Operator
 }
 
 func IsOperator(expr Expr) bool {

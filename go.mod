@@ -1,3 +1,3 @@
 module github.com/brysonurie/ll1-parser
 
-go 1.23.6
+go 1.23
